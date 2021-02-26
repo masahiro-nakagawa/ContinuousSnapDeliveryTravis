@@ -1,0 +1,34 @@
+language: shell
+dist: focal
+os: linux
+
+env:
+  global:
+    - SNAPCRAFT_BUILD_ENVIRONMENT: 'lxd'
+
+
+addons:
+  snaps:
+    - name: snapcraft
+      channel: stable
+      confinement: classic
+    - name: lxd
+      channel: stable
+
+script:
+  - sudo usermod --append --groups lxd $USER
+  - groups
+  - sudo /snap/bin/lxd.migrate -yes
+  - sudo /snap/bin/lxd waitready
+  - sudo /snap/bin/lxd init --auto
+  - sg lxd -c snapcraft
+  - echo " ----Deploy-----"
+  - echo $SNAP_TOKEN
+  - echo $SNAP_TOKEN | snapcraft login --with -
+  - snapcraft whoami
+  - snapcraft upload --release=edge hello-hirotravis_2.10_amd64.snap 
+
+after_failure:
+ -sudo journalctl -u snapd
+
+
