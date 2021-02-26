@@ -6,6 +6,8 @@ env:
   global:
     - SNAPCRAFT_BUILD_ENVIRONMENT: 'lxd'
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_52d8b4643c0d_key -iv $encrypted_52d8b4643c0d_iv -in hello-masahiro.enc -out hello-masahiro -d
 
 addons:
   snaps:
@@ -16,6 +18,7 @@ addons:
       channel: stable
 
 script:
+  - 
   - echo .travis.yml
   - pwd
   - sudo usermod --append --groups lxd $USER
@@ -31,6 +34,6 @@ script:
   - snapcraft upload --release=edge hello-hirotravis_2.10_amd64.snap 
 
 after_failure:
- -sudo journalctl -u snapd
+ - sudo journalctl -u snapd
 
 
