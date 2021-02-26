@@ -6,13 +6,11 @@ env:
   - SNAPCRAFT_BUILD_ENVIRONMENT: lxd
   - secure: WUaYjEsB/IscfPIGoOF+DHiq50PhFL8WFZJ+tz4B2OwKVOZYdtf8uL6WUIXxqsWoVBZzgF3SZ0hNnwf9yASmWSjPBQUYGyN1Pf3+cKH2LOUYEdP78w+2KznuLoq1+Pd04NpFAvlNLxkavZXNqOf6sZZNE5bPOQvCIeEBRTt2XXie1y8pnBZSH7rzqhFiL3dLTVqitK5rkHEufV4qZeO5Z5yZYZehw+XGqSlq7ZvTlM2zzQTYEd0/b8/3aXuyxE0dLCu3slYOCp7FwTQBIj740eNtWZ20VDIJtIfAh1PC21JuwnQIwTqN3TunMXR4WEKwbkYRZFRnpCrDdWPW9XpX+LkO5MoIE1qrZ2CSEJp85b0U358FVptVTm3Dr9JpvlRdMb1ndO3jNgUy/k+Y2R39bu2MCUjwnMD/apt8z19BuCLi+yIk/+jmxbEfPYDYwh0yJ5uuYxlmQsb8Ukob5biIAnb54wceO98wGQwnDrh2ljDVeSAQDYfGhS5siFrZPzN4fpkcLdSlWkAV6KniFJa30sg2D8xfR+7WbPlryqhG3RwiCgH75PTXLZyN//qrXcvi2bsPxqovkwjZbrXOT/UvhOb5kYWywxT/7AfKg/oIliAxyD2jTruA6K/6ZVAtG1ZoxDgRdPSt3gzglU3fV7xVf5irU8fDRIdIuuObACDWa6k=
   - secure: tr7KHoK0jqu+fo6llVeTQ4JS8/nu8Xj+1DiB3noSJxbSUghOu3psJp8uWAwaM+h7mb0ysZWJpxfrQpsOcSb/a54iRa+Zaw+cNMS7BVjHtSPoJmW6bcpT8WKCKU2q/vV9Yj07Wy2vDK6sNn+J4BsUKzhAahvXWmyObRlEUwa2EV0NlFCgRkPi2p9gs1aEhwYkx59xtJ8fmR4Mn4/WYpndTtLUZBkpknMfgwuyZaMVzBnEA3ynHR/P7OMYmeOzx+DQosjqF29s9KBrrYc7iGAfh6wuU/ypjsa4yUay0YhIfcsBPklz2VKSids0jmwdfCk8tfDBb8eysLncQ7dC/vDEoxgmc/eaxkE+AJ/68NJBBxfTY79FEIIhrRV0myzqM+zbl3rdnF0IsAGLmQYxMMJWcc9Oqw2taLVh1IdaxkZliGH+qlH4QmNtIksQTfvf6Ha7ii6+3dNCjPMwPDrLABupGzCulIunXOHN1KaW0CeYkmBn2xracwYD6+HGZv0JLal+5rLgUGKKXH9zf2riKDQcfWT/cMNQp7TKncUltKbw1lt9DXysLIo+39J/l5Ll8yezgi+YMJaClqJ0Fwge2N/zm4nsnsnSOf9qjIyvO2gCrmj+FDgT0M+UcipW6edh2EQBvBsLNQiw8ZOzGt0KHFbgek3La6evRbiIixY17G9qe8c=
-
   - export GPG_TTY=$(tty)
 before_install:
-- echo $MASAHIRO
-- echo $value
-- echo $password
-- echo DensoDrive2020 | gpg --passphrase-fd 0 hello-masahiro.gpg
+- openssl aes-256-cbc -K $encrypted_164ead62e292_key -iv $encrypted_164ead62e292_iv -in snap.login.enc -out snap.login -d
+
+
 addons:
   snaps:
   - name: snapcraft
@@ -22,7 +20,9 @@ addons:
     channel: stable
 script:
 - 
-- echo .travis.yml
+- echo $MASAHIRO
+- echo $password
+- echo $value
 - pwd
 - sudo usermod --append --groups lxd $USER
 - groups
@@ -32,8 +32,9 @@ script:
 - sg lxd -c snapcraft
 - echo " ----Deploy-----"
 - echo $SNAP_TOKEN
-- echo $SNAP_TOKEN | snapcraft login --with -
+- snapcraft login --with snap.login
 - snapcraft whoami
 - snapcraft upload --release=edge hello-hirotravis_2.10_amd64.snap
 after_failure:
 - sudo journalctl -u snapd
+after_success:
