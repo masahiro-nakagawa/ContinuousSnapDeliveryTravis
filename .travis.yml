@@ -16,6 +16,8 @@ addons:
       channel: stable
 
 script:
+  - echo .travis.yml
+  - pwd
   - sudo usermod --append --groups lxd $USER
   - groups
   - sudo /snap/bin/lxd.migrate -yes
